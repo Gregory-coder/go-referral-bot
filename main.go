@@ -43,10 +43,10 @@ func main() {
 	bh.Handle(func(bot *telego.Bot, update telego.Update) {
 		_, err := bot.SendMessage(tu.Message(
 			tu.ID(update.Message.Chat.ID),
-			fmt.Sprintf("Привет, %s!\nНажми кнопку ниже, чтобы получить реферальную ссылку", update.Message.From.FirstName),
+			fmt.Sprintf("Hi, %s!\nPress the button below, to get the link", update.Message.From.FirstName),
 		).WithReplyMarkup(tu.InlineKeyboard(
 			tu.InlineKeyboardRow(
-				tu.InlineKeyboardButton("Создать ссылку").WithCallbackData("new_link"),
+				tu.InlineKeyboardButton("Create link").WithCallbackData("new_link"),
 			)),
 		))
 		if err != nil {
@@ -72,7 +72,7 @@ func main() {
 		}
 
 		if err != nil {
-			bot.SendMessage(tu.Message(tu.ID(query.From.ID), "Что-то пошло не так"))
+			bot.SendMessage(tu.Message(tu.ID(query.From.ID), "Something went wrong"))
 			log.Println(err)
 		}
 	}, th.AnyCallbackQueryWithMessage(), th.CallbackDataEqual("new_link"))
@@ -80,7 +80,7 @@ func main() {
 	// On /links
 	bh.Handle(func(bot *telego.Bot, update telego.Update) {
 		if !slices.Contains(conf.Admins, update.Message.Chat.ID) {
-			bot.SendMessage(tu.Message(tu.ID(update.Message.Chat.ID), "Эта функция доступна только админам"))
+			bot.SendMessage(tu.Message(tu.ID(update.Message.Chat.ID), "This function is unavailable for you"))
 			return
 		}
 
@@ -89,12 +89,12 @@ func main() {
 			document := tu.Document(
 				tu.ID(update.Message.Chat.ID),
 				tu.File(file),
-			).WithCaption("Список выданных ссылок")
+			).WithCaption("The list of generated links")
 		
 			_, err = bot.SendDocument(document)
 		}
 		if err != nil {
-			bot.SendMessage(tu.Message(tu.ID(update.Message.Chat.ID), "Что-то пошло не так"))
+			bot.SendMessage(tu.Message(tu.ID(update.Message.Chat.ID), "Something went wrong"))
 			log.Println(err)
 		}
 	}, th.CommandEqual("links"))
@@ -103,7 +103,7 @@ func main() {
 	bh.Handle(func(bot *telego.Bot, update telego.Update) {
 		bot.SendMessage(tu.Message(
 			tu.ID(update.Message.Chat.ID),
-			"Неизвестная команда, используйте /start",
+			"Unknown command, use /start",
 		))
 	}, th.AnyCommand())
 
@@ -111,7 +111,7 @@ func main() {
 	bh.Handle(func(bot *telego.Bot, update telego.Update) {
 		bot.SendMessage(tu.Message(
 			tu.ID(update.Message.Chat.ID),
-			"Я вас не понимаю, вызовите /start",
+			"I don't understand you, use /start",
 		))
 	}, th.AnyMessage())
 
